@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirect</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const customerId = urlParams.get('customer_id');
+            const userAddress = urlParams.get('user_address');
+ 
+            if (customerId && userAddress) {
+                fetch(`https://europe-west3-asterisk-tts-test.cloudfunctions.net/success-url-redirection-after-stripe?customer_id=${customerId}&user_address=${userAddress}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.redirect_url) {
+                            window.location.href = data.redirect_url;
+                        } else if (data.error) {
+                            alert(`Error: ${data.error}`);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            } else {
+                alert('Missing customer_id or user_address');
+            }
+        });
+    </script>
+ 
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        p {
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <p>Processing your request, please wait...</p>
+</body>
+</html>
